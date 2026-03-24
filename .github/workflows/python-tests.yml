@@ -3,8 +3,6 @@ name: Python Tests
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   test:
@@ -12,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Baixar código
+
+    - name: Checkout código
       uses: actions/checkout@v4
 
     - name: Instalar Python
@@ -25,6 +24,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
 
-    - name: Rodar testes
+    - name: Rodar testes e gerar relatório
       run: |
-        python -m pytest
+        python -m pytest --junitxml=resultado-testes.xml
+
+    - name: Enviar artefato
+      uses: actions/upload-artifact@v4
+      with:
+        name: relatorio-testes
+        path: resultado-testes.xml
